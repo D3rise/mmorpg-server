@@ -42,10 +42,10 @@ exports.modifyUser = async (req, res) => {
 
 exports.verifyUser = async (req, res) => {
   const { verifyCode } = req.body;
-  const { user } = req;
+  const { id } = req.user;
 
   try {
-    const user = await User.findById(user.id).exec();
+    const user = await User.findById(id).exec();
 
     if (user.verified)
       return res
