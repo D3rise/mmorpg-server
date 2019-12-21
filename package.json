@@ -1,0 +1,29 @@
+{
+  "name": "mmorpg-server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "start:dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.7",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "express-validator": "^6.3.0",
+    "flakeid": "^1.0.0",
+    "http-errors": "~1.6.3",
+    "i18n": "^0.8.4",
+    "jsonwebtoken": "^8.5.1",
+    "log4js": "^6.1.0",
+    "mongoose": "^5.8.0",
+    "morgan": "^1.9.1",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "walk": "^2.3.14"
+  },
+  "devDependencies": {
+    "prettier": "^1.19.1"
+  }
+}
