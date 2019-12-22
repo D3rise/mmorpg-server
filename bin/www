@@ -38,7 +38,7 @@ i18n.configure({
   directory: __dirname + "/../locales",
   register: global
 });
-i18n.init();
+app.use(i18n.init);
 
 /**
  * Listen on provided port, on all network interfaces.

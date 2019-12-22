@@ -1,25 +1,70 @@
 const User = require("../models/User");
-const { body } = require("express-validator");
-const bcrypt = require("bcrypt");
+const { body, query } = require("express-validator");
+const jwt = require("jsonwebtoken");
+const config = require("../config/database");
+const makeString = require("../utils/makeString");
+
+// TODO: Send message to user's email with verification string like http://mmmorpg.pw/api/users/verify?verifyCode=PoRSWnQrtGB7gN0zR59GeierZvpvV9
 
 exports.createUser = async (req, res) => {
   const { username, email, password } = req.body;
-  const passwordHash = bcrypt.hash(password, 10);
 
   try {
+    if (await User.checkIfUserWithEmailExists(email))
+      return res
+        .status(400)
+        .send({ ok: false, message: "User with this email already exists!" });
+
+    if (await User.checkIfUserWithUsernameExists(username))
+      return res.status(400).send({
+        ok: false,
+        message: "User with this username already exists!"
+      });
+
     await User.create({
       email,
       username,
-      password: passwordHash
+      password
     });
 
     res.send({ ok: true, message: "User created successfully" });
   } catch (e) {
-    if (e.keyPattern && e.keyPattern.email === 1)
+    logger.error(e);
+    return res
+      .status(503)
+      .send({ ok: false, message: `Internal server error` });
+  }
+};
+
+exports.login = async (req, res) => {
+  const { email, username, password } = req.query;
+  let user;
+  try {
+    if (typeof email !== "undefined" || typeof username !== "undefined") {
+      user = email
+        ? await User.findOne({ email }).exec()
+        : await User.findOne({ username }).exec();
+    } else {
+      return res
+        .status(400)
+        .send({ ok: false, message: "Not enough arguments" });
+    }
+
+    if (!user)
       return res.status(400).send({
         ok: false,
-        message: "User with this email already exists"
+        message: "User with this email/username does not exists"
       });
+
+    const result = user.comparePassword(password);
+    if (result) {
+      const token = jwt.sign({ id: user._id }, config.secret);
+      return res
+        .status(200)
+        .send({ ok: true, message: `Logged in as ${user.username}`, token });
+    } else
+      return res.status(401).send({ ok: false, message: "Invalid password" });
+  } catch (e) {
     logger.error(e);
     return res
       .status(503)
@@ -28,36 +73,60 @@ exports.createUser = async (req, res) => {
 };
 
 exports.modifyUser = async (req, res) => {
-  const { modifyData } = req.body;
+  const { modifyData, password } = req.body;
   const { user } = req;
   const modify = JSON.parse(modifyData);
 
-  try {
-    await User.findByIdAndUpdate(user.id, modify);
-    return res.send({ ok: true, message: "User modified successfully" });
-  } catch (e) {
-    return res.status(503).send({ ok: false, message: e.message });
+  if (!user.comparePassword(password))
+    return res
+      .status(403)
+      .send({ ok: false, message: req.__("Invalid password") });
+
+  if (modifyData.includes("email")) {
+    if (User.checkIfUserWithEmailExists(modify.email))
+      return res.status(400).send({ ok: false, message: req.__("") });
+
+    // TODO: Sent message to user's email with verification string
+    const verificationCode = makeString(30);
+    User.findByIdAndUpdate(user._id, {
+      verified: false,
+      verifyCode: verificationCode
+    });
   }
+
+  if (modifyData.includes("username"))
+    try {
+      await User.findByIdAndUpdate(user.id, modify).exec();
+      return res.send({
+        ok: true,
+        message: res.__("User modified successfully")
+      });
+    } catch (e) {
+      return res.status(503).send({ ok: false, message: e.message });
+    }
 };
 
 exports.verifyUser = async (req, res) => {
-  const { verifyCode } = req.body;
-  const { id } = req.user;
+  const { verifyCode } = req.query;
+  const { user } = req;
 
   try {
-    const user = await User.findById(id).exec();
-
     if (user.verified)
-      return res
-        .status(400)
-        .send({ ok: false, message: "You already verified your account" });
+      return res.status(400).send({
+        ok: false,
+        message: req.__("You already verified your account")
+      });
     if (verifyCode !== user.verifyCode)
-      return res
-        .status(400)
-        .send({ ok: false, message: "Invalid verify code" });
+      return res.status(400).send({
+        ok: false,
+        message: req.__("You already verified your account")
+      });
 
     await User.findByIdAndUpdate(user.id, { verified: true }).exec();
-    return res.send({ ok: true, message: "User verified successfully" });
+    return res.send({
+      ok: true,
+      message: req.__("User verified successfully")
+    });
   } catch (e) {
     return res.status(503).send({ ok: false, message: e.message });
   }
@@ -70,7 +139,11 @@ exports.validate = route => {
         body("username", "Invalid username")
           .exists()
           .withMessage("'username' argument is required")
-          .isString(),
+          .isString()
+          .isLength({ min: 3, max: 20 })
+          .withMessage(
+            "Length of username parameter has to be in range of 3 and 20 symbols"
+          ),
         body("email", "Invalid email")
           .exists()
           .withMessage("'email' argument is required")
@@ -88,16 +161,45 @@ exports.validate = route => {
         body("modifyData", "Invalid modifyData")
           .exists()
           .withMessage("modifyData parameter is not found")
-          .isJSON()
+          .isJSON(),
+        body("password", "Invalid password")
+          .exists()
+          .withMessage("password parameter is required")
+          .isString()
+          .isLength({ min: 9 })
+          .withMessage("Min length of password is 9")
       ];
     }
 
     case "verifyUser": {
       return [
-        body("verifyCode", "Invalid verifyCode")
+        query("verifyCode", "Invalid verifyCode")
           .exists()
           .withMessage("verifyCode parameter is required")
           .isString()
+      ];
+    }
+
+    case "changePassword": {
+      return [
+        body("oldPassword", "Invalid oldPassword")
+          .exists()
+          .withMessage("oldPassword parameter is required")
+          .isString(),
+        body("newPassword", "Invalid newPassword")
+          .exists()
+          .withMessage("newPassword parameter is required")
+      ];
+    }
+
+    case "login": {
+      return [
+        query("password", "Invalid password parameter")
+          .exists()
+          .withMessage("password parameter is required")
+          .isString()
+          .isLength({ min: 9 })
+          .withMessage("Min length of password is 9")
       ];
     }
   }

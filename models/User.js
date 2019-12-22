@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const flakeid = require("flakeid");
-const i18n = require("i18n");
-const { makeString } = require("../utils/makeString");
+const bcrypt = require("bcrypt");
+const makeString = require("../utils/makeString");
 
 const UserSchema = new mongoose.Schema({
   _id: String,
@@ -13,28 +13,32 @@ const UserSchema = new mongoose.Schema({
   characters: { type: [String], default: null, ref: "Character" }, // id of the character
   friends: { type: [String], default: null, ref: "User" }, // ids of friends
   currentCharacter: { type: String, default: null, ref: "Character" },
-  locale: String
+  locale: { type: String, default: "en" }
 });
 
-UserSchema.pre("save", function(next) {
+UserSchema.statics.checkIfUserWithUsernameExists = async function(username) {
+  return (await this.findOne({ username }).exec()) !== null;
+};
+
+UserSchema.statics.checkIfUserWithEmailExists = async function(email) {
+  return (await this.findOne({ email }).exec()) !== null;
+};
+
+UserSchema.methods.comparePassword = function(password) {
+  console.log(this.password);
+  return bcrypt.compareSync(password, this.password);
+};
+
+UserSchema.pre("save", async function(next) {
   if (this.isNew) {
     const Flake = new flakeid();
     this._id = Flake.gen();
   }
 
+  if (this.isModified("password"))
+    this.password = await bcrypt.hash(this.password, 10);
+
   next();
 });
-
-UserSchema.methods.__ = function(phrase) {
-  const obj = {};
-  i18n.configure({
-    locales: ["en", "ru"],
-    defaultLocale: this.locale,
-    directory: __dirname + "/../locales",
-    register: obj
-  });
-
-  return obj.__(phrase);
-};
 
 module.exports = mongoose.model("User", UserSchema);
