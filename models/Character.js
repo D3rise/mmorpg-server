@@ -8,7 +8,6 @@ const CharacterSchema = new mongoose.Schema({
   level: { type: Number, default: 1 },
   xp: { type: Number, default: 1 },
   nextLevelXp: { type: Number, default: 200 },
-  abilities: { type: String, ref: "Ability" },
   stats: { type: String, ref: "Stats" },
   notifications: { type: String, ref: "Notification" },
   inventory: { type: [String], ref: "Item" },
