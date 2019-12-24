@@ -6,15 +6,16 @@ const ItemSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   slot: { type: String, required: true },
-  class: { type: String, required: true },
+  className: { type: String, required: true },
   attackType: { type: String, required: true },
   rarity: { type: String, required: true },
-  character: { type: String, required: true, ref: "User" },
+  character: { type: String, required: true, ref: "Character" },
   requiredStats: Map,
-  statsBuff: Map,
-  statsDebuff: Map,
-  statsOnUsePlayer: Map,
-  statsOnUseEnemy: Map,
+
+  weaponAbilities: Map,
+  armorProperties: Map,
+  poisonProperties: Map,
+  
   equipped: Boolean
 });
 

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const flakeid = require("flakeid");
+const Attributes = require("./Attributes")
 
 const StatsSchema = new mongoose.Schema({
   _id: String,
@@ -14,6 +15,10 @@ StatsSchema.pre("save", function(next) {
   if (this.isNew) {
     const Flake = new flakeid();
     this._id = Flake.gen();
+      
+    Attributes.create({
+      stats: this._id
+    })
   }
 
   next();

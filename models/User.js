@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   verified: { type: Boolean, default: false },
   verifyCode: { type: String, default: makeString(30) },
+  tokenVerify: { type: String, default: makeString(10) },
   characters: { type: [String], default: null, ref: "Character" }, // id of the character
   friends: { type: [String], default: null, ref: "User" }, // ids of friends
   currentCharacter: { type: String, default: null, ref: "Character" },

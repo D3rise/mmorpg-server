@@ -7,7 +7,15 @@ routes.load = function(server) {
 
   walker.on("directory", (root, stats, next) => {
     const router = require(`${resolve(root)}/${stats.name}/index.js`);
-    server.use("/api/" + stats.name + "/", router);
+    const errorHandlerRouter = (req, res) => {
+      try {
+        router(res, res)
+      } catch (e) {
+        logger.error(e)
+        res.status(503).send({ ok: false, message: "Internal Server Error" })
+      }
+    }
+    server.use("/api/" + stats.name + "/", errorHandlerRouter);
     logger.info(`Added API route ${"/api/" + stats.name}`);
     next();
   });

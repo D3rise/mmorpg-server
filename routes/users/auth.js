@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const UserController = require("../../controllers/User");
 const validate = require("../../middleware/validateRequest");
-const authenticate = require("../../middleware/authenticate");
+const authenticate = require("../../middleware/authenticateRequest");
 
 router.get("/login", [
   UserController.validate("login"),

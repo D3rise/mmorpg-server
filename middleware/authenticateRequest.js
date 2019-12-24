@@ -17,6 +17,9 @@ module.exports = async (req, res, next) => {
       .populate()
       .exec();
 
+    if (jwtPayload.verify !== user.tokenVerify)
+      return res.status(401).send({ ok: false, message: "Token invalid" });
+
     if (!user) return res.status(401).send({ message: "User does not exists" });
     req.user = user;
     req.setLocale(user.locale);

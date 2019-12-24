@@ -39,7 +39,7 @@ exports.createUser = async (req, res) => {
 exports.login = async (req, res) => {
   const { email, username, password } = req.query;
   let user;
-  try {
+
     if (typeof email !== "undefined" || typeof username !== "undefined") {
       user = email
         ? await User.findOne({ email }).exec()
@@ -58,18 +58,12 @@ exports.login = async (req, res) => {
 
     const result = user.comparePassword(password);
     if (result) {
-      const token = jwt.sign({ id: user._id }, config.secret);
+      const token = jwt.sign({ id: user._id, verify: user.tokenVerify }, config.secret);
       return res
         .status(200)
         .send({ ok: true, message: `Logged in as ${user.username}`, token });
     } else
       return res.status(401).send({ ok: false, message: "Invalid password" });
-  } catch (e) {
-    logger.error(e);
-    return res
-      .status(503)
-      .send({ ok: false, message: `Internal server error` });
-  }
 };
 
 exports.modifyUser = async (req, res) => {
@@ -95,22 +89,17 @@ exports.modifyUser = async (req, res) => {
   }
 
   if (modifyData.includes("username"))
-    try {
       await User.findByIdAndUpdate(user.id, modify).exec();
       return res.send({
         ok: true,
         message: res.__("User modified successfully")
       });
-    } catch (e) {
-      return res.status(503).send({ ok: false, message: e.message });
-    }
 };
 
 exports.verifyUser = async (req, res) => {
   const { verifyCode } = req.query;
   const { user } = req;
 
-  try {
     if (user.verified)
       return res.status(400).send({
         ok: false,
@@ -127,9 +116,6 @@ exports.verifyUser = async (req, res) => {
       ok: true,
       message: req.__("User verified successfully")
     });
-  } catch (e) {
-    return res.status(503).send({ ok: false, message: e.message });
-  }
 };
 
 exports.validate = route => {

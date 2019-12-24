@@ -1,0 +1,23 @@
+{
+    "name": "Rusty Sword",
+    "description": "This sword was given to you by the old man who met you on your arrival in the province of Rooney.",
+    "slot": "weapon",
+    "className": "warrior",
+    "rarity": "common",
+    "abilities": {
+        "stab": {
+            "name": "Stab",
+            "description": "Stab with the sword",
+            "hitChance": 80,
+            "minDamage": 1,
+            "maxDamage": 5,
+            "regainTime": 1
+        }
+    },
+    "requiredStats": {
+        "level": 1,
+        "power": 1,
+        "agility": 1,
+        "intelligence": 1
+    }
+}
