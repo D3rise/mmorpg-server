@@ -1,5 +1,6 @@
 const { body } = require("express-validator");
 const Character = require("../models/Character");
+const User = require("../models/User");
 
 exports.createCharacter = async (req, res) => {
   const { user } = req;
@@ -8,12 +9,10 @@ exports.createCharacter = async (req, res) => {
   let character = await Character.findOne({ name }).exec();
 
   if (character)
-    return res
-      .status(400)
-      .send({
-        ok: false,
-        message: req.__(`Character with this name already exists`)
-      });
+    return res.status(400).send({
+      ok: false,
+      message: req.__(`Character with this name already exists`)
+    });
 
   character = await Character.create({ name, className, user });
   return res.send({
@@ -21,6 +20,28 @@ exports.createCharacter = async (req, res) => {
     message: req.__f(`Character with name {name} successfully created`, {
       name: character.name
     })
+  });
+};
+
+exports.changeCharacter = async (req, res) => {
+  const { user } = req;
+  const { newCharacter } = req.body;
+
+  if (!user.characters.includes(newCharacter))
+    return res.send({
+      ok: false,
+      message: req.__("You do not have access to this character")
+    });
+  await User.findByIdAndUpdate(user._id, {
+    currentCharacter: newCharacter
+  }).exec();
+
+  return res.send({
+    ok: true,
+    message: req.__f(
+      "Successfully changed current character to {newCharacter}",
+      { newCharacter }
+    )
   });
 };
 
@@ -42,6 +63,15 @@ exports.validate = route => {
           .withMessage(
             "className must be one of: warrior, archer, wizard, slayer"
           )
+      ];
+    }
+
+    case "changeCharacter": {
+      return [
+        body("newCharacter", "Invalid newCharacter")
+          .isString()
+          .exists()
+          .withMessage("newCharacter parameter is required")
       ];
     }
   }

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const flakeid = require("flakeid");
 const Notification = require("./Notification");
 const Stats = require("./Stats");
+const User = require("./User");
 
 const CharacterSchema = new mongoose.Schema({
   _id: String,
@@ -13,10 +14,12 @@ const CharacterSchema = new mongoose.Schema({
   inventory: { type: [String], ref: "Item" },
   user: { type: String, ref: "User", required: true },
   className: { type: String, required: true },
-  name: { type: String, unique: true, required: true }
+  name: { type: String, unique: true, required: true },
+  quests: { type: [String] },
+  currentQuest: { type: String }
 });
 
-CharacterSchema.pre("save", function(next) {
+CharacterSchema.pre("save", async function(next) {
   if (this.isNew) {
     const Flake = new flakeid();
     this._id = Flake.gen();
@@ -31,19 +34,22 @@ CharacterSchema.pre("save", function(next) {
       case "archer": {
         stats = {
           agility: 3
-        }
-        break
+        };
+        break;
       }
       case "wizard": {
         stats = {
           intelligence: 3
-        }
+        };
       }
     }
 
-    stats.character = this._id
-
+    stats.character = this._id;
     Stats.create(stats);
+
+    User.findByIdAndUpdate(this.user, {
+      $push: { characters: this._id }
+    }).exec();
   }
 
   if (this.xp >= this.nextLevelXp) {

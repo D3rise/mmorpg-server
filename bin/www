@@ -9,6 +9,7 @@ var app = require("../app");
 var http = require("http");
 var routes = require("../routes");
 var i18n = require("i18n");
+var sockets = require("../sockets")
 
 /**
  * Get port from environment and store in Express.
@@ -47,6 +48,12 @@ app.use(i18n.init);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
+
+/**
+ * Initialize socket.io
+ */
+
+sockets.load(server)
 
 /**
  * Normalize a port into a number, string, or false.
