@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const flakeid = require("flakeid");
+const { makeId } = require("../utils")
 
 const ItemSchema = new mongoose.Schema({
-  _id: String,
+  _id: { type: String, default: makeId() },
   name: { type: String, required: true },
   description: { type: String, required: true },
   slot: { type: String, required: true },
@@ -17,15 +17,6 @@ const ItemSchema = new mongoose.Schema({
   poisonProperties: Map,
   
   equipped: Boolean
-});
-
-ItemSchema.pre("save", function(next) {
-  if (this.isNew) {
-    const Flake = new flakeid();
-    this._id = Flake.gen();
-  }
-
-  next();
 });
 
 module.exports = mongoose.model("Item", ItemSchema);

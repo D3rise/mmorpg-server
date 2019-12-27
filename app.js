@@ -63,4 +63,6 @@ app.get("/", function(req, res) {
   res.send(err);
 });*/
 
+require("./models/User")
+
 module.exports = app;

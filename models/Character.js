@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
-const flakeid = require("flakeid");
+const { makeId } = require("../utils")
 const Notification = require("./Notification");
 const Stats = require("./Stats");
 const User = require("./User");
 
 const CharacterSchema = new mongoose.Schema({
-  _id: String,
+  _id: { type: String, default: makeId() },
   level: { type: Number, default: 1 },
   xp: { type: Number, default: 1 },
   nextLevelXp: { type: Number, default: 200 },
@@ -21,8 +21,6 @@ const CharacterSchema = new mongoose.Schema({
 
 CharacterSchema.pre("save", async function(next) {
   if (this.isNew) {
-    const Flake = new flakeid();
-    this._id = Flake.gen();
     var stats;
 
     switch (this.className) {

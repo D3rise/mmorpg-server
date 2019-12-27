@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const flakeid = require("flakeid");
+const { makeId } = require("../utils")
 const Stats = require("./Stats");
 const formulas = require("../formulas");
 
 const AttributesSchema = new mongoose.Schema({
-  _id: String,
+  _id: { type: String, default: makeId() },
   stats: { type: String, ref: "Stats" },
   health: Number,
   damage: Number,
@@ -15,9 +15,6 @@ const AttributesSchema = new mongoose.Schema({
 
 AttributesSchema.pre("save", async function(next) {
   if (this.isNew) {
-    const Flake = new flakeid();
-    this._id = Flake.gen();
-
     const stats = await Stats.findById(this.stats).exec();
     const { attributes } = formulas;
     this.health = attributes.health(stats.power);

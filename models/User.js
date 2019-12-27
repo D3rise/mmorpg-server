@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const flakeid = require("flakeid");
+const { makeId } = require("../utils")
 const bcrypt = require("bcrypt");
 const makeString = require("../utils/makeString");
 
 const UserSchema = new mongoose.Schema({
-  _id: String,
+  _id: { type: String, default: makeId() },
   username: { type: String, unique: true, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
@@ -31,11 +31,6 @@ UserSchema.methods.comparePassword = function(password) {
 };
 
 UserSchema.pre("save", async function(next) {
-  if (this.isNew) {
-    const Flake = new flakeid();
-    this._id = Flake.gen();
-  }
-
   if (this.isModified("password"))
     this.password = await bcrypt.hash(this.password, 10);
 

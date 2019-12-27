@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@babel/runtime@^7.4.4":
-  version "7.7.6"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.7.6.tgz#d18c511121aff1b4f2cd1d452f1bac9601dd830f"
-  integrity sha512-BWAJxpNVa0QlE5gZdWjSxXtemZyZ9RmrmVozxt3NUXeZhVIJ5ANyqmMc0JDrivBZyxUuQvFxlvH4OWWOogGfUw==
-  dependencies:
-    regenerator-runtime "^0.13.2"
-
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -106,6 +99,11 @@ better-assert@~1.0.0:
   integrity sha1-QIZrnhueC1W0gYlDEeaPr/rrxSI=
   dependencies:
     callsite "1.0.0"
+
+biguint-format@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/biguint-format/-/biguint-format-1.0.1.tgz#0ad9a81a48de96a79084c1a2fcc11bf27b80e284"
+  integrity sha512-EyEAXbBXdXHTmysr9bFjiTiFa7nDwew4N2qZ2Ka0aAM9oTidS5lNH3jVTBPFcaXyRCzLpw1cb3ATD+fzg89/fQ==
 
 blob@0.0.5:
   version "0.0.5"
@@ -416,12 +414,10 @@ finalhandler@1.1.1:
     statuses "~1.4.0"
     unpipe "~1.0.0"
 
-flakeid@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/flakeid/-/flakeid-1.0.0.tgz#25f3586d29c1efce16e09a4df8a5b2eb7aa8d3cd"
-  integrity sha512-R1Db+B3IyW69gGP/vwwHi7xNvKn4GlBTimRbXbyKzc+HXX4PFjvCS20mOUk0v7d3JrbCYjHJhJSaOLo8vje6Cw==
-  dependencies:
-    "@babel/runtime" "^7.4.4"
+flake-idgen@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/flake-idgen/-/flake-idgen-1.1.2.tgz#ada07c42359a3bed0bbae3786810355202412b2c"
+  integrity sha512-VNhbzA/dUfWNn8Vko4iWRFonl8bdyNFkU11936KCsjyesa8ScDuYSr7LlC8XCAZ7TfEnhwpbDjPMOW+kvdZCnw==
 
 flatted@^2.0.1:
   version "2.0.1"
@@ -1138,11 +1134,6 @@ readable-stream@^2.0.6:
     safe-buffer "~5.1.1"
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
-
-regenerator-runtime@^0.13.2:
-  version "0.13.3"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.3.tgz#7cf6a77d8f5c6f60eb73c5fc1955b2ceb01e6bf5"
-  integrity sha512-naKIZz2GQ8JWh///G7L3X6LaQUAMp2lvb1rvwwsURe/VXwD6VMfr+/1NuNw3ag8v2kY1aQ/go5SNn79O9JU7yw==
 
 regexp-clone@1.0.0, regexp-clone@^1.0.0:
   version "1.0.0"

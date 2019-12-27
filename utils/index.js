@@ -1,3 +1,4 @@
 module.exports = {
-  makeString: require("./makeString")
+  makeString: require("./makeString"),
+  makeId: require("./makeId")
 };

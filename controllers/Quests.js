@@ -64,5 +64,13 @@ exports.validate = method => {
           .exists()
           .withMessage("quest parameter is required")
       ];
+
+    case "getQuests":
+        return [
+          body("quest", "Invalid quest")
+            .isString()
+            .exists()
+            .withMessage("quest parameter is required")
+        ];
   }
 };

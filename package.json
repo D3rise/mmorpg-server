@@ -8,11 +8,12 @@
   },
   "dependencies": {
     "bcrypt": "^3.0.7",
+    "biguint-format": "^1.0.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "express-validator": "^6.3.0",
-    "flakeid": "^1.0.0",
+    "flake-idgen": "^1.1.2",
     "http-errors": "~1.6.3",
     "i18n": "^0.8.4",
     "jsonwebtoken": "^8.5.1",
