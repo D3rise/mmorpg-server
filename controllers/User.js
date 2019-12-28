@@ -40,30 +40,31 @@ exports.login = async (req, res) => {
   const { email, username, password } = req.query;
   let user;
 
-    if (typeof email !== "undefined" || typeof username !== "undefined") {
-      user = email
-        ? await User.findOne({ email }).exec()
-        : await User.findOne({ username }).exec();
-    } else {
-      return res
-        .status(400)
-        .send({ ok: false, message: "Not enough arguments" });
-    }
+  if (typeof email !== "undefined" || typeof username !== "undefined") {
+    user = email
+      ? await User.findOne({ email }).exec()
+      : await User.findOne({ username }).exec();
+  } else {
+    return res.status(400).send({ ok: false, message: "Not enough arguments" });
+  }
 
-    if (!user)
-      return res.status(400).send({
-        ok: false,
-        message: "User with this email/username does not exists"
-      });
+  if (!user)
+    return res.status(400).send({
+      ok: false,
+      message: "User with this email/username does not exists"
+    });
 
-    const result = user.comparePassword(password);
-    if (result) {
-      const token = jwt.sign({ id: user._id, verify: user.tokenVerify }, config.secret);
-      return res
-        .status(200)
-        .send({ ok: true, message: `Logged in as ${user.username}`, token });
-    } else
-      return res.status(401).send({ ok: false, message: "Invalid password" });
+  const result = user.comparePassword(password);
+  if (result) {
+    const token = jwt.sign(
+      { id: user._id, verify: user.tokenVerify },
+      config.secret
+    );
+    return res
+      .status(200)
+      .send({ ok: true, message: `Logged in as ${user.username}`, token });
+  } else
+    return res.status(401).send({ ok: false, message: "Invalid password" });
 };
 
 exports.modifyUser = async (req, res) => {
@@ -89,33 +90,33 @@ exports.modifyUser = async (req, res) => {
   }
 
   if (modifyData.includes("username"))
-      await User.findByIdAndUpdate(user.id, modify).exec();
-      return res.send({
-        ok: true,
-        message: res.__("User modified successfully")
-      });
+    await User.findByIdAndUpdate(user.id, modify).exec();
+  return res.send({
+    ok: true,
+    message: res.__("User modified successfully")
+  });
 };
 
 exports.verifyUser = async (req, res) => {
   const { verifyCode } = req.query;
   const { user } = req;
 
-    if (user.verified)
-      return res.status(400).send({
-        ok: false,
-        message: req.__("You already verified your account")
-      });
-    if (verifyCode !== user.verifyCode)
-      return res.status(400).send({
-        ok: false,
-        message: req.__("You already verified your account")
-      });
-
-    await User.findByIdAndUpdate(user.id, { verified: true }).exec();
-    return res.send({
-      ok: true,
-      message: req.__("User verified successfully")
+  if (user.verified)
+    return res.status(400).send({
+      ok: false,
+      message: req.__("You already verified your account")
     });
+  if (verifyCode !== user.verifyCode)
+    return res.status(400).send({
+      ok: false,
+      message: req.__("You already verified your account")
+    });
+
+  await User.findByIdAndUpdate(user.id, { verified: true }).exec();
+  return res.send({
+    ok: true,
+    message: req.__("User verified successfully")
+  });
 };
 
 exports.validate = route => {

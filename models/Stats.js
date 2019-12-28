@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const { makeId } = require("../utils")
-const Attributes = require("./Attributes")
+const { makeId } = require("../utils");
+const Attributes = require("./Attributes");
 
 const StatsSchema = new mongoose.Schema({
   _id: { type: String, default: makeId() },
@@ -15,7 +15,7 @@ StatsSchema.pre("save", function(next) {
   if (this.isNew) {
     Attributes.create({
       stats: this._id
-    })
+    });
   }
 
   next();

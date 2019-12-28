@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { makeId } = require("../utils")
+const { makeId } = require("../utils");
 
 const ItemSchema = new mongoose.Schema({
   _id: { type: String, default: makeId() },
@@ -15,7 +15,7 @@ const ItemSchema = new mongoose.Schema({
   weaponAbilities: Map,
   armorProperties: Map,
   poisonProperties: Map,
-  
+
   equipped: Boolean
 });
 

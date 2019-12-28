@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { makeId } = require("../utils")
+const { makeId } = require("../utils");
 const bcrypt = require("bcrypt");
 const makeString = require("../utils/makeString");
 

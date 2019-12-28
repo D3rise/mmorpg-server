@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const { makeId } = require("../utils")
+const { makeId } = require("../utils");
 const Stats = require("./Stats");
-const formulas = require("../formulas");
+const formulas = require("../assets/formulas");
 
 const AttributesSchema = new mongoose.Schema({
   _id: { type: String, default: makeId() },

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const { makeId } = require("../utils")
+const { makeId } = require("../utils");
 const Character = require("./Character");
-const sockets = require("../sockets")
+const sockets = require("../sockets");
 
 const NotificationSchema = new mongoose.Schema({
   _id: { type: String, default: makeId() },
@@ -20,8 +20,12 @@ NotificationSchema.pre("save", async function(next) {
       }
     );
 
-    const user = await Character.findById(this.character).populate("user").exec().user
-    sockets.io.to(user._id).emit("notification", { label: this.label, text: this.text })
+    const user = await Character.findById(this.character)
+      .populate("user")
+      .exec().user;
+    sockets.io
+      .to(user._id)
+      .emit("notification", { label: this.label, text: this.text });
   }
 
   next();
