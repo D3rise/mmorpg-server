@@ -9,9 +9,13 @@ module.exports = jwtAuth.authenticate(
   async (payload, done) => {
     try {
       const user = User.findById(payload.id);
-      if (!user) return done(null, false, "Token invalid");
-      if (payload.verify !== user.tokenVerify)
+      if (!user) {
         return done(null, false, "Token invalid");
+      }
+
+      if (payload.verify !== user.tokenVerify) {
+        return done(null, false, "Token invalid");
+      }
 
       return done(null, user);
     } catch (err) {

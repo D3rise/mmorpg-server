@@ -13,6 +13,8 @@ const CharacterSchema = new mongoose.Schema({
   nextLevelXp: { type: Number, default: 200 },
 
   stats: { type: String, ref: "Stats" },
+  attributes: { type: String, ref: "Attributes" },
+
   notifications: { type: String, ref: "Notification" },
   inventory: { type: [String], ref: "Item" },
 
@@ -60,11 +62,11 @@ CharacterSchema.pre("save", async function(next) {
     }).exec();
   }
 
-  if (this.isModified(x) || this.isModified(y)) {
+  if (this.isModified("x") || this.isModified("y")) {
     const currentLocation = await this.populate("currentLocation")
       .currentLocation;
 
-    if (x === 0) {
+    if (this.x === 0) {
       const newLocation = await Location.findById(
         currentLocation.rightLocation
       ).exec();
@@ -73,7 +75,7 @@ CharacterSchema.pre("save", async function(next) {
       this.x = newLocation.xLength;
     }
 
-    if (y === 0) {
+    if (this.y === 0) {
       const newLocation = await Location.findById(
         currentLocation.bottomLocation
       ).exec();
@@ -82,7 +84,7 @@ CharacterSchema.pre("save", async function(next) {
       this.y = newLocation.yLength;
     }
 
-    if (x === currentLocation.xLength) {
+    if (this.x === currentLocation.xLength) {
       const newLocation = await Location.findById(
         currentLocation.leftLocation
       ).exec();
@@ -91,7 +93,7 @@ CharacterSchema.pre("save", async function(next) {
       this.x = 0;
     }
 
-    if (y === currentLocation.yLength) {
+    if (this.y === currentLocation.yLength) {
       const newLocation = await Location.findById(
         currentLocation.topLocation
       ).exec();

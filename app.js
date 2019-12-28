@@ -17,7 +17,9 @@ mongoose.connect(
     useCreateIndex: true
   },
   err => {
-    if (err) return logger.error("Can't connect to DB: \n" + err);
+    if (err) {
+      return logger.error("Can't connect to DB: \n" + err);
+    }
     logger.info("Connected to DB");
   }
 );
@@ -53,7 +55,7 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};

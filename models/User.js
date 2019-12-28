@@ -5,15 +5,21 @@ const makeString = require("../utils/makeString");
 
 const UserSchema = new mongoose.Schema({
   _id: { type: String, default: makeId() },
+
   username: { type: String, unique: true, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
+  tfaEnabled: { type: Boolean, default: false },
+  tfaSecret: { type: String },
+
   verified: { type: Boolean, default: false },
   verifyCode: { type: String, default: makeString(30) },
   tokenVerify: { type: String, default: makeString(10) },
+
   characters: { type: [String], default: null, ref: "Character" }, // id of the character
-  friends: { type: [String], default: null, ref: "User" }, // ids of friends
   currentCharacter: { type: String, default: null, ref: "Character" },
+
+  friends: { type: [String], default: null, ref: "User" }, // ids of friends
   locale: { type: String, default: "en" }
 });
 

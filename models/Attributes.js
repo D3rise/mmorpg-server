@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 const { makeId } = require("../utils");
-const Stats = require("./Stats");
+const Character = require("./Character");
 const formulas = require("../assets/formulas");
 
 const AttributesSchema = new mongoose.Schema({
   _id: { type: String, default: makeId() },
-  stats: { type: String, ref: "Stats" },
+
+  character: { type: String, ref: "Character" },
+
   health: Number,
   damage: Number,
   mana: Number,
@@ -15,7 +17,9 @@ const AttributesSchema = new mongoose.Schema({
 
 AttributesSchema.pre("save", async function(next) {
   if (this.isNew) {
-    const stats = await Stats.findById(this.stats).exec();
+    const { stats } = await Character.findById(this.character)
+      .populate("stats")
+      .exec();
     const { attributes } = formulas;
     this.health = attributes.health(stats.power);
     this.damage = attributes.minDamage(stats.power);

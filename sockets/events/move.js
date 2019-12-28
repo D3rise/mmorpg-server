@@ -25,7 +25,7 @@ module.exports = async (socket, moveData) => {
     case moveData.y !== "-": {
       return socket.emit("error", {
         event: "move",
-        message: `Coord value need to be "+" or "-"`
+        message: 'Coord value need to be "+" or "-"'
       });
     }
 

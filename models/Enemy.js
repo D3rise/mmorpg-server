@@ -3,7 +3,10 @@ const { makeId } = require("../utils");
 
 const EnemySchema = new mongoose.Schema({
   _id: { type: String, default: makeId() },
-  name: String,
-  level: Number,
+  name: { type: String },
+  level: { type: Number },
+  health: { type: Number },
   location: { type: String, ref: "Location" }
 });
+
+module.exports = mongoose.model("Enemy", EnemySchema);

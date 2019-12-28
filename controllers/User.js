@@ -2,6 +2,8 @@ const User = require("../models/User");
 const { body, query } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const config = require("../config/database");
+const speakeasy = require("speakeasy");
+const QRCode = require("qrcode");
 const makeString = require("../utils/makeString");
 
 // TODO: Send message to user's email with verification string like http://mmmorpg.pw/api/users/verify?verifyCode=PoRSWnQrtGB7gN0zR59GeierZvpvV9
@@ -10,16 +12,18 @@ exports.createUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    if (await User.checkIfUserWithEmailExists(email))
+    if (await User.checkIfUserWithEmailExists(email)) {
       return res
         .status(400)
         .send({ ok: false, message: "User with this email already exists!" });
+    }
 
-    if (await User.checkIfUserWithUsernameExists(username))
+    if (await User.checkIfUserWithUsernameExists(username)) {
       return res.status(400).send({
         ok: false,
         message: "User with this username already exists!"
       });
+    }
 
     await User.create({
       email,
@@ -34,6 +38,28 @@ exports.createUser = async (req, res) => {
       .status(503)
       .send({ ok: false, message: `Internal server error` });
   }
+};
+
+exports.enableTfa = async (req, res) => {
+  const { user } = req;
+  if (user.tfaEnabled) {
+    return res.send({ ok: false, message: "2FA already enabled" });
+  }
+
+  const tfaSecret = speakeasy.generateSecret({ length: 32 });
+  await User.findByIdAndUpdate(user._id, {
+    tfaSecret: tfaSecret.base32,
+    tfaEnabled: true
+  });
+
+  const googleAuthQR = await QRCode.toDataURL(tfaSecret.otpauth_url);
+
+  return res.send({
+    ok: true,
+    message: "2FA successfully enabled",
+    googleAuthQR,
+    secret: tfaSecret.base32
+  });
 };
 
 exports.login = async (req, res) => {
@@ -56,13 +82,31 @@ exports.login = async (req, res) => {
 
   const result = user.comparePassword(password);
   if (result) {
+    if (user.tfaEnabled && !req.body["tfa-token"]) {
+      return res.send({ ok: false, message: "TFA Token Required" });
+    }
+
+    if (req.body["tfa-token"] && user.tfaEnabled) {
+      var verified = speakeasy.totp.verify({
+        secret: user.tfaSecret,
+        encoding: "base32",
+        token: req.body["tfa-token"]
+      });
+
+      if (!verified) {
+        return res.send({ ok: false, message: "Invalid 2FA token" });
+      }
+    }
+
     const token = jwt.sign(
       { id: user._id, verify: user.tokenVerify },
       config.secret
     );
-    return res
-      .status(200)
-      .send({ ok: true, message: `Logged in as ${user.username}`, token });
+    return res.status(200).send({
+      ok: true,
+      message: `Logged in as ${user.username}`,
+      token
+    });
   } else
     return res.status(401).send({ ok: false, message: "Invalid password" });
 };
@@ -89,8 +133,10 @@ exports.modifyUser = async (req, res) => {
     });
   }
 
-  if (modifyData.includes("username"))
+  if (modifyData.includes("username")) {
     await User.findByIdAndUpdate(user.id, modify).exec();
+  }
+
   return res.send({
     ok: true,
     message: res.__("User modified successfully")
@@ -101,16 +147,19 @@ exports.verifyUser = async (req, res) => {
   const { verifyCode } = req.query;
   const { user } = req;
 
-  if (user.verified)
+  if (user.verified) {
     return res.status(400).send({
       ok: false,
       message: req.__("You already verified your account")
     });
-  if (verifyCode !== user.verifyCode)
+  }
+
+  if (verifyCode !== user.verifyCode) {
     return res.status(400).send({
       ok: false,
       message: req.__("You already verified your account")
     });
+  }
 
   await User.findByIdAndUpdate(user.id, { verified: true }).exec();
   return res.send({
