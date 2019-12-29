@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "start:dev": "nodemon ./bin/www"
+    "start:dev": "nodemon ./bin/www",
+    "test": "node ./tests"
   },
   "dependencies": {
     "bcrypt": "^3.0.7",
     "biguint-format": "^1.0.1",
-    "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "express-validator": "^6.3.0",
@@ -29,9 +29,9 @@
     "walk": "^2.3.14"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "eslint": "^6.8.0",
     "eslint-plugin-security": "^1.4.0",
     "prettier": "^1.19.1"
   }
