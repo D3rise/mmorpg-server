@@ -29,6 +29,8 @@
     "walk": "^2.3.14"
   },
   "devDependencies": {
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "eslint": "^6.8.0",
     "eslint-plugin-security": "^1.4.0",
     "prettier": "^1.19.1"

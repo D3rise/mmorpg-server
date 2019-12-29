@@ -40,6 +40,49 @@ exports.createUser = async (req, res) => {
   }
 };
 
+exports.resetToken = async (req, res) => {
+  const { user } = req;
+
+  if (user.tfaEnabled) {
+    const { tfaToken } = req.body;
+    if (!tfaToken) return res.send({ ok: false, message: "tfaToken required" });
+
+    var verified = speakeasy.totp.verify({
+      secret: user.tfaSecret,
+      encoding: "base32",
+      token: tfaToken
+    });
+
+    if (!verified) return res.send({ ok: false, message: "Invalid 2FA token" });
+  }
+
+  const newTokenVerify = makeString(10);
+  await User.findByIdAndUpdate(user._id, { tokenVerify: newTokenVerify });
+
+  const newToken = jwt.sign({ id: user._id, newTokenVerify }, config.secret);
+  return res.send({ ok: true, token: newToken });
+};
+
+exports.disableTfa = async (req, res) => {
+  const { user } = req;
+  const { tfaToken } = req.body;
+
+  var verified = speakeasy.totp.verify({
+    secret: user.tfaSecret,
+    encoding: "base32",
+    token: tfaToken
+  });
+
+  if (!verified) return res.send({ ok: false, message: "Invalid 2FA token" });
+
+  await User.findByIdAndUpdate(user._id, {
+    tfaEnabled: false,
+    tfaSecret: undefined
+  });
+
+  return res.send({ ok: true, message: "2FA successfully disabled" });
+};
+
 exports.enableTfa = async (req, res) => {
   const { user } = req;
   if (user.tfaEnabled) {
@@ -81,16 +124,19 @@ exports.login = async (req, res) => {
     });
 
   const result = user.comparePassword(password);
-  if (result) {
-    if (user.tfaEnabled && !req.body["tfa-token"]) {
-      return res.send({ ok: false, message: "TFA Token Required" });
-    }
 
-    if (req.body["tfa-token"] && user.tfaEnabled) {
+  if (result) {
+    if (user.tfaEnabled) {
+      const { tfaToken } = req.body;
+
+      if (tfaToken) {
+        return res.send({ ok: false, message: "TFA Token Required" });
+      }
+
       var verified = speakeasy.totp.verify({
         secret: user.tfaSecret,
         encoding: "base32",
-        token: req.body["tfa-token"]
+        token: tfaToken
       });
 
       if (!verified) {
@@ -236,6 +282,15 @@ exports.validate = route => {
           .isString()
           .isLength({ min: 9 })
           .withMessage("Min length of password is 9")
+      ];
+    }
+
+    case "disableTfa": {
+      return [
+        body("tfaToken", "Invalid tfaToken")
+          .exists()
+          .withMessage("tfaToken parameter is required")
+          .isString()
       ];
     }
   }

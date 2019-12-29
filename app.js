@@ -1,7 +1,7 @@
 const createError = require("http-errors");
 const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const log4js = require("log4js");
 const mongoose = require("mongoose");
 const passport = require("passport");
@@ -28,9 +28,13 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
+app.use(
+  session({
+    secret: require("./config/database").secret,
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
+  })
+);
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(

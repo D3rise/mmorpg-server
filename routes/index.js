@@ -5,6 +5,7 @@ const router = require("express").Router();
 const walker = walk.walk("./routes");
 
 walker.on("directory", (root, stats, next) => {
+  // eslint-disable-next-line security/detect-non-literal-require
   const router = require(`${resolve(root)}/${stats.name}/index.js`);
   const errorHandlerRouter = (req, res) => {
     try {

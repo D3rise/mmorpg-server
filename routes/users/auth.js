@@ -9,6 +9,15 @@ router.get("/login", [
   UserController.login
 ]);
 
+router.post("/disable2fa", [
+  authenticate,
+  UserController.validate("disableTfa"),
+  validate,
+  UserController.disableTfa
+]);
+
+router.post("/enable2fa", [authenticate, UserController.enableTfa]);
+
 router.post("/register", [
   UserController.validate("createUser"),
   validate,

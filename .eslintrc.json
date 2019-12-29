@@ -4,8 +4,8 @@
     "es6": true,
     "node": true
   },
-  "plugins": ["security"],
-  "extends": ["eslint:recommended", "plugin:security/recommended"],
+  "plugins": ["security", "prettier"],
+  "extends": ["plugin:prettier/recommended", "plugin:security/recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly",
