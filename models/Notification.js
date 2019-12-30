@@ -4,7 +4,7 @@ const Character = require("./Character");
 const sockets = require("../sockets");
 
 const NotificationSchema = new mongoose.Schema({
-  _id: { type: String, default: makeId() },
+  _id: { type: String, default: makeId },
 
   label: { type: String, required: true },
   text: { type: String, required: true },

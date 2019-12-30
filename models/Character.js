@@ -6,7 +6,7 @@ const User = require("./User");
 const Location = require("./Location");
 
 const CharacterSchema = new mongoose.Schema({
-  _id: { type: String, default: makeId() },
+  _id: { type: String, default: makeId },
 
   level: { type: Number, default: 1 },
   xp: { type: Number, default: 1 },

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { makeId } = require("../utils");
 
 const ItemSchema = new mongoose.Schema({
-  _id: { type: String, default: makeId() },
+  _id: { type: String, default: makeId },
   name: { type: String, required: true },
   description: { type: String, required: true },
   slot: { type: String, required: true },

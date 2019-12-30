@@ -45,6 +45,9 @@ app.get("/", function(req, res) {
   res.send("Page under construction.");
 });
 
+// TODO: Fix "404 on all routes" issue
+/*
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -61,4 +64,5 @@ app.use(function(err, req, res) {
   res.send(err);
 });
 
+*/
 module.exports = app;

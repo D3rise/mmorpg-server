@@ -47,7 +47,7 @@ server.on("listening", onListening);
  * Initialize router
  */
 
-app.use(routes);
+routes(app);
 
 /**
  * Initialize socket.io

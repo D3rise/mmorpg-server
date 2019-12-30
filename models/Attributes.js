@@ -4,7 +4,7 @@ const Character = require("./Character");
 const formulas = require("../assets/formulas");
 
 const AttributesSchema = new mongoose.Schema({
-  _id: { type: String, default: makeId() },
+  _id: { type: String, default: makeId },
 
   character: { type: String, ref: "Character" },
 

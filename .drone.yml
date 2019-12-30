@@ -13,4 +13,10 @@ steps:
 
   - name: eslint
     commands:
-      - eslint --fix
+      - eslint --fix ./
+
+  - name: codecov
+    image: plugins/codecov
+    settings:
+      token:
+        from_secret: CODECOV_TOKEN

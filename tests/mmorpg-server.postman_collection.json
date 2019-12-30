@@ -1,0 +1,255 @@
+{
+	"info": {
+		"_postman_id": "6e0166cb-f8e8-41b0-9359-0c0e9ad66f61",
+		"name": "mmorpg-server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3d352b8d-558d-43c9-9426-3c8e4ad6f816",
+								"exec": [
+									"pm.test(\"ok\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.ok).to.eql(true);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "motherducker",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "motherpasser",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "mother@duck.er",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/login?email=mother@duck.io&password=motherpasser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"login"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "mother@duck.io"
+								},
+								{
+									"key": "password",
+									"value": "motherpasser"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enable 2FA",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MTcyMDI4MzA3NTMxMzY2NDAiLCJ2ZXJpZnkiOiJocHA4RFBvN214IiwiaWF0IjoxNTc3NjY1MTc3fQ.vb5fptaEUYinEBK1Wd6jvl7yJjbgW8ftQ9pZ9SiJLvY",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users/enable2fa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"enable2fa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disable 2FA",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MTcyMDI4MzA3NTMxMzY2NDAiLCJ2ZXJpZnkiOiJocHA4RFBvN214IiwiaWF0IjoxNTc3NjY1MTc3fQ.vb5fptaEUYinEBK1Wd6jvl7yJjbgW8ftQ9pZ9SiJLvY",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "tfaToken",
+									"value": "723814",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/disable2fa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"disable2fa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MTcyMDI4MzA3NTMxMzY2NDAiLCJ2ZXJpZnkiOiJocHA4RFBvN214IiwiaWF0IjoxNTc3NjY1MTc3fQ.vb5fptaEUYinEBK1Wd6jvl7yJjbgW8ftQ9pZ9SiJLvY",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users/verify?verifyCode=dSDraQOUcJNg8vc9u24Dg0kAQWJAC6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"verify"
+							],
+							"query": [
+								{
+									"key": "verifyCode",
+									"value": "dSDraQOUcJNg8vc9u24Dg0kAQWJAC6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Username",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MTcyMDI4MzA3NTMxMzY2NDAiLCJ2ZXJpZnkiOiJocHA4RFBvN214IiwiaWF0IjoxNTc3NjY1MTc3fQ.vb5fptaEUYinEBK1Wd6jvl7yJjbgW8ftQ9pZ9SiJLvY",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "modifyData",
+									"value": "{\"username\": \"D3rise\"}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "motherpasser",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

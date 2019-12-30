@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const makeString = require("../utils/makeString");
 
 const UserSchema = new mongoose.Schema({
-  _id: { type: String, default: makeId() },
+  _id: { type: String, default: makeId },
 
   username: { type: String, unique: true, required: true },
   email: { type: String, unique: true, required: true },

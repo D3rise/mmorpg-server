@@ -1,3 +1,5 @@
 {
-	"Invalid password": "Invalid password"
+	"Invalid password": "Invalid password",
+	"User verified successfully": "User verified successfully",
+	"User modified successfully": "User modified successfully"
 }

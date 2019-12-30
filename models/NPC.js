@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { makeId } = require("../utils");
 
 const NPCSchema = new mongoose.Schema({
-  _id: { type: String, default: makeId() },
+  _id: { type: String, default: makeId },
   name: { type: String },
 
   location: { type: String, ref: "Location" },

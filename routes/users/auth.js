@@ -24,7 +24,7 @@ router.post("/register", [
   UserController.createUser
 ]);
 
-router.put("/updateUser", [
+router.put("/update", [
   authenticate,
   UserController.validate("modifyUser"),
   validate,

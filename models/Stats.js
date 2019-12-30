@@ -3,7 +3,7 @@ const { makeId } = require("../utils");
 const Attributes = require("./Attributes");
 
 const StatsSchema = new mongoose.Schema({
-  _id: { type: String, default: makeId() },
+  _id: { type: String, default: makeId },
 
   character: { type: String, ref: "Character" },
 
