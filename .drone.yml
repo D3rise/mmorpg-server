@@ -6,7 +6,16 @@ platform:
   os: linux
   arch: amd64
 
+clone:
+  disable: true
+
 steps:
+  - name: custom_clone
+    image: plugins/git
+    settings:
+      depth: 10
+      skip_verify: true
+
   - name: tests
     image: node:latest
     commands:
