@@ -1,5 +1,5 @@
 kind: pipeline
-type: exec
+type: docker
 name: default
 
 platform:
@@ -8,11 +8,16 @@ platform:
 
 steps:
   - name: tests
+    image: node:latest
     commands:
+      - npm install -g yarn
+      - yarn install
       - yarn test
 
   - name: eslint
+    image: node:latest
     commands:
+      - npm install -g eslint
       - eslint --fix ./
 
   - name: codecov
