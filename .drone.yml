@@ -19,14 +19,13 @@ steps:
   - name: tests
     image: node:latest
     commands:
-      - npm install -g yarn
-      - yarn install
-      - yarn test
+      - npm install
+      - npm test
 
   - name: eslint
     image: node:latest
     commands:
-      - npm install -g eslint
+      - npm install -g --force eslint
       - eslint --fix ./
 
   - name: codecov
