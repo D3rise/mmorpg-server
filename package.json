@@ -8,7 +8,7 @@
     "test": "node ./tests"
   },
   "dependencies": {
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "biguint-format": "^1.0.1",
     "debug": "~2.6.9",
     "express": "~4.16.1",
