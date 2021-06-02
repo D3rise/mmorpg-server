@@ -7,7 +7,6 @@ const QRCode = require("qrcode");
 const makeString = require("../utils/makeString");
 
 // TODO: Send message to user's email with verification string like http://mmmorpg.pw/api/users/verify?verifyCode=PoRSWnQrtGB7gN0zR59GeierZvpvV9
-
 exports.createUser = async (req, res) => {
   const { username, email, password } = req.body;
 
