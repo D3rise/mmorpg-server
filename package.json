@@ -17,7 +17,7 @@
     "http-errors": "~1.6.3",
     "i18n": "^0.8.4",
     "jsonwebtoken": "^8.5.1",
-    "log4js": "^6.1.0",
+    "log4js": "^6.4.0",
     "mongoose": "^5.8.0",
     "morgan": "^1.9.1",
     "passport": "^0.4.1",
